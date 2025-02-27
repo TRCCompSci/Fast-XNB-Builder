@@ -20,6 +20,7 @@ namespace Fast_XNB_Builder
         static string PathA = Environment.CurrentDirectory + "\\Source\\";
         static string PathC = Environment.CurrentDirectory + "\\Final\\";
         static bool _usingUI = false;
+	    
         [STAThread]
         static void Main(string[] args)
         {
@@ -55,6 +56,7 @@ namespace Fast_XNB_Builder
                 Console.ReadKey();
             }
         }
+	    
         static void ConvertModelX(string path, string outputpath)
         {
             OpaqueDataDictionary keyValues = new OpaqueDataDictionary();
@@ -83,6 +85,7 @@ namespace Fast_XNB_Builder
             };
             pipeline.BuildContent(path, outputpath, "XImporter", "ModelProcessor", keyValues);
         }
+	    
         static void ConvertTexture2D(string input, string output)
         {
             OpaqueDataDictionary keyValues = new OpaqueDataDictionary();
@@ -156,7 +159,7 @@ namespace Fast_XNB_Builder
             
         }
 
-		static void ConvertSpriteFont(string input, string output)
+	static void ConvertSpriteFont(string input, string output)
 		{
 			OpaqueDataDictionary keyValues = new OpaqueDataDictionary();
 			keyValues.Add("Importer", "FontDescriptionImporter");
@@ -174,7 +177,7 @@ namespace Fast_XNB_Builder
 			};
             manager.BuildContent(input, output, null, null, keyValues);
 		}
-		static void ConvertFile(string file)
+	static void ConvertFile(string file)
         {
             string[] ext = file.Split('.');
             string extension = ext[ext.Length - 1];
@@ -208,6 +211,7 @@ namespace Fast_XNB_Builder
                     break;
             }
         }
+	    
         static void ConvertSoundOGG(string input, string output)
         {
             OpaqueDataDictionary keyValues = new OpaqueDataDictionary();
@@ -225,6 +229,7 @@ namespace Fast_XNB_Builder
             };
             manager.BuildContent(input, output, "OggImporter", "SoundEffectProcessor", keyValues);
         }
+	    
         static void ConvertSoundMP3(string input, string output)
         {
             OpaqueDataDictionary keyValues = new OpaqueDataDictionary();
@@ -244,7 +249,7 @@ namespace Fast_XNB_Builder
             manager.BuildContent(input, output, "Mp3Importer", "SongProcessor", keyValues);
         }
 
-		static void ConvertSoundEffectMP3(string input, string output)
+	static void ConvertSoundEffectMP3(string input, string output)
 		{
 			OpaqueDataDictionary keyValues = new OpaqueDataDictionary();
 			keyValues.Add("Importer", "Mp3Importer");
@@ -261,7 +266,8 @@ namespace Fast_XNB_Builder
 			};
 			manager.BuildContent(input, output, "Mp3Importer", "SoundEffectProcessor", keyValues);
 		}
-		static void ConvertSoundWAV(string input, string output)
+	
+	static void ConvertSoundWAV(string input, string output)
         {
             OpaqueDataDictionary keyValues = new OpaqueDataDictionary();
             keyValues.Add("Importer", "WavImporter");
