@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +9,9 @@ using MonoGame.Framework.Content.Pipeline.Builder;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content.Pipeline.Processors;
+using Nvidia.TextureTools;
+using System.Diagnostics;
 
 namespace Fast_XNB_Builder
 {
@@ -152,7 +155,26 @@ namespace Fast_XNB_Builder
             Console.WriteLine("XNB Converter > [OK] Done!");
             
         }
-        static void ConvertFile(string file)
+
+		static void ConvertSpriteFont(string input, string output)
+		{
+			OpaqueDataDictionary keyValues = new OpaqueDataDictionary();
+			keyValues.Add("Importer", "FontDescriptionImporter");
+			keyValues.Add("Processor", "FontDescriptionProcessor");
+			keyValues.Add("PremultiplyAlpha", true);
+			keyValues.Add("TextureFormat", "Compressed");
+			ContentBuildLogger logger = new Logger();
+			PipelineManager manager = new PipelineManager(PathA, PathC, PathC)
+			{
+				RethrowExceptions = true,
+				CompressContent = true,
+				Logger = logger,
+				Platform = TargetPlatform.Windows,
+				Profile = GraphicsProfile.Reach
+			};
+            manager.BuildContent(input, output, null, null, keyValues);
+		}
+		static void ConvertFile(string file)
         {
             string[] ext = file.Split('.');
             string extension = ext[ext.Length - 1];
@@ -161,7 +183,12 @@ namespace Fast_XNB_Builder
                 case "x":
                     ConvertModelX(file, PathC + Path.GetFileNameWithoutExtension(file));
                     break;
+                case "spritefont":
+					ConvertSpriteFont(file, PathC + Path.GetFileNameWithoutExtension(file));
+					break;
                 case "png":
+                case "jpg":
+                case "gif":
                 case "bmp":
                 case "dds":
                     ConvertTexture2D(file, PathC + Path.GetFileNameWithoutExtension(file));
@@ -173,7 +200,8 @@ namespace Fast_XNB_Builder
                     ConvertSoundWAV(file, PathC + Path.GetFileNameWithoutExtension(file));
                     break;
                 case "mp3":
-                    ConvertSoundMP3(file, PathC + Path.GetFileNameWithoutExtension(file));
+                    ConvertSoundMP3(file, PathC + Path.GetFileNameWithoutExtension(file) + "Song");
+                    ConvertSoundEffectMP3(file, PathC + Path.GetFileNameWithoutExtension(file) + "Effect");
                     break;
                 default:
                     Console.WriteLine("XNB Converter > [INFO] XNB Converter: Unsuported format found:" + extension);
@@ -201,9 +229,10 @@ namespace Fast_XNB_Builder
         {
             OpaqueDataDictionary keyValues = new OpaqueDataDictionary();
             keyValues.Add("Importer", "Mp3Importer");
-            keyValues.Add("Processor", "SoundEffectProcessor");
+            keyValues.Add("Processor", "SongProcessor");
             keyValues.Add("Quality", "Best");
-            ContentBuildLogger logger = new Logger();
+
+			ContentBuildLogger logger = new Logger();
             PipelineManager manager = new PipelineManager(PathA, PathC, PathC)
             {
                 RethrowExceptions = true,
@@ -212,9 +241,27 @@ namespace Fast_XNB_Builder
                 Platform = TargetPlatform.Windows,
                 Profile = GraphicsProfile.Reach
             };
-            manager.BuildContent(input, output, "Mp3Importer", "SoundEffectProcessor", keyValues);
+            manager.BuildContent(input, output, "Mp3Importer", "SongProcessor", keyValues);
         }
-        static void ConvertSoundWAV(string input, string output)
+
+		static void ConvertSoundEffectMP3(string input, string output)
+		{
+			OpaqueDataDictionary keyValues = new OpaqueDataDictionary();
+			keyValues.Add("Importer", "Mp3Importer");
+			keyValues.Add("Processor", "SoundEffectProcessor");
+			keyValues.Add("Quality", "Best");
+			ContentBuildLogger logger = new Logger();
+			PipelineManager manager = new PipelineManager(PathA, PathC, PathC)
+			{
+				RethrowExceptions = true,
+				CompressContent = true,
+				Logger = logger,
+				Platform = TargetPlatform.Windows,
+				Profile = GraphicsProfile.Reach
+			};
+			manager.BuildContent(input, output, "Mp3Importer", "SoundEffectProcessor", keyValues);
+		}
+		static void ConvertSoundWAV(string input, string output)
         {
             OpaqueDataDictionary keyValues = new OpaqueDataDictionary();
             keyValues.Add("Importer", "WavImporter");
